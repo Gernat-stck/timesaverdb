@@ -1,52 +1,65 @@
 import Cita, { ICita } from "../models/Cita";
 import { citaSchema } from "../validators/citaValidator";
+import { Request, Response } from "express";
 
-export const crearCita = async (args: ICita) => {
-  const { error } = citaSchema.validate(args);
+export const crearCita = async (req: Request, res: Response) => {
+  const { error } = citaSchema.validate(req.body);
   if (error) {
-    throw new Error(error.details[0].message);
+    return res.status(400).send(error.details[0].message);
   }
-  const nuevaCita = new Cita(args);
+  const nuevaCita = new Cita(req.body);
   await nuevaCita.save();
-  return nuevaCita;
+  return res.status(201).send(nuevaCita);
 };
 
-export const actualizarCita = async (id: string, args: ICita) => {
-  const { error } = citaSchema.validate(args);
+export const actualizarCita = async (req: Request, res: Response) => {
+  const { error } = citaSchema.validate(req.body);
   if (error) {
-    throw new Error(error.details[0].message);
+    return res.status(400).send(error.details[0].message);
   }
-  const cita = await Cita.findByIdAndUpdate(id, args, { new: true });
+  const cita = await Cita.findByIdAndUpdate(req.params.id, req.body, {
+    new: true,
+  });
   if (!cita) {
-    throw new Error("Cita no encontrada");
+    return res.status(404).send("Cita no encontrada");
   }
-  return cita;
+  return res.status(200).send(cita);
 };
 
-export const obtenerCitas = async (): Promise<ICita[]> => {
+export const obtenerCitas = async (
+  req: Request,
+  res: Response
+): Promise<Response> => {
   const citas = await Cita.find();
-  return citas;
+  return res.status(200).send(citas);
 };
 
-export const obtenerCita = async (id: string): Promise<ICita> => {
-  const cita = await Cita.findById(id);
+export const obtenerCita = async (
+  req: Request,
+  res: Response
+): Promise<Response> => {
+  const cita = await Cita.findById(req.params.id);
   if (!cita) {
-    throw new Error("Cita no encontrada");
+    return res.status(404).send("Cita no encontrada");
   }
-  return cita;
+  return res.status(200).send(cita);
 };
 
-export const eliminarCita = async (id: string): Promise<ICita> => {
-  const cita = await Cita.findByIdAndDelete(id);
+export const eliminarCita = async (
+  req: Request,
+  res: Response
+): Promise<Response> => {
+  const cita = await Cita.findByIdAndDelete(req.params.id);
   if (!cita) {
-    throw new Error("Cita no encontrada");
+    return res.status(404).send("Cita no encontrada");
   }
-  return cita;
+  return res.status(200).send(cita);
 };
 
 export const obtenerCitasPorUsuario = async (
-  usuario: string
-): Promise<ICita[]> => {
-  const citas = await Cita.find({ usuario });
-  return citas;
+  req: Request,
+  res: Response
+): Promise<Response> => {
+  const citas = await Cita.find({ usuario: req.params.usuario });
+  return res.status(200).send(citas);
 };
