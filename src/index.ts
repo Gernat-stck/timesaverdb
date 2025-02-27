@@ -1,3 +1,11 @@
+//TODO: Incluir los typesDefs
+//TODO: Crear Rutas
+//TODO: Ajustar Middlewares de autenticación
+//TODO: Ajustar Middlewares de Apollo Server
+//TODO: Iniciar Pruebas
+//TODO: Crear Websockets para actualizacion en tiempo real
+//TODO: Crear Subscripciones
+
 // src/index.ts
 import express from "express";
 import { ApolloServer } from "@apollo/server";
@@ -13,6 +21,9 @@ import { resolvers } from "./resolvers";
 
 // Importa el middleware de autenticación
 import { authenticate, AuthRequest } from "./middlewares/authenticate";
+
+//Importar rutas
+import router from "./routes";
 // Configura las variables de entorno
 dotenv.config();
 
@@ -34,6 +45,8 @@ app.use(json());
 // Aplica el middleware de autenticación antes de las rutas
 app.use(authenticate);
 
+//Uso de rustas definidas
+app.use("/api", router);
 // Configura Apollo Server
 const server = new ApolloServer({
   typeDefs,
