@@ -223,4 +223,42 @@ export const resolvers: IResolvers = {
       }
     },
   },
+  Usuario: {
+    citas: async (parent) => {
+      return obtenerCitasPorUsuario(parent.id);
+    },
+    clientes: async (parent) => {
+      return obtenerClientesPorUsuario(parent.id);
+    },
+    servicios: async (parent) => {
+      return obtenerServiciosPorUsuario(parent.id);
+    },
+  },
+  Cliente: {
+    usuario: async (parent) => {
+      return obtenerUsuario(parent.usuario);
+    },
+    citas: async (parent) => {
+      return obtenerCitasPorUsuario(parent.usuario);
+    },
+  },
+  Servicio: {
+    usuario: async (parent) => {
+      return obtenerUsuario(parent.usuario);
+    },
+    citas: async (parent) => {
+      return obtenerCitasPorUsuario(parent.usuario);
+    },
+  },
+  Cita: {
+    cliente: async (parent) => {
+      return obtenerCliente(parent.cliente);
+    },
+    servicio: async (parent) => {
+      return obtenerServicio(parent.servicio);
+    },
+    usuario: async (parent) => {
+      return obtenerUsuario(parent.usuario);
+    },
+  },
 };
