@@ -1,4 +1,3 @@
-// src/typeDefs/index.ts
 import { gql } from "graphql-tag";
 
 export const typeDefs = gql`
@@ -9,6 +8,9 @@ export const typeDefs = gql`
     nombre: String!
     whatsapp: String
     email: String!
+    citas: [Cita]
+    clientes: [Cliente]
+    servicios: [Servicio]
   }
 
   type Cliente {
@@ -16,6 +18,8 @@ export const typeDefs = gql`
     nombre: String!
     telefono: String
     email: String
+    usuario: Usuario!
+    citas: [Cita]
   }
 
   type Servicio {
@@ -26,6 +30,8 @@ export const typeDefs = gql`
     precio: Float!
     duracion: Int
     categoria: String
+    usuario: Usuario!
+    citas: [Cita]
   }
 
   type Cita {
@@ -42,9 +48,16 @@ export const typeDefs = gql`
 
   type Query {
     obtenerUsuarios: [Usuario]
+    obtenerUsuario(id: ID!): Usuario
     obtenerClientes: [Cliente]
+    obtenerCliente(id: ID!): Cliente
     obtenerServicios: [Servicio]
+    obtenerServicio(id: ID!): Servicio
     obtenerCitas: [Cita]
+    obtenerCita(id: ID!): Cita
+    obtenerCitasPorUsuario(usuario: ID!): [Cita]
+    obtenerServiciosPorUsuario(usuario: ID!): [Servicio]
+    obtenerClientesPorUsuario(usuario: ID!): [Cliente]
     # Agrega más queries según necesites
   }
 
@@ -55,7 +68,11 @@ export const typeDefs = gql`
       password: String!
     ): Usuario
     iniciarSesion(email: String!, password: String!): AuthPayload
+    actualizarUsuario(id: ID!, data: UsuarioInput!): Usuario
+    eliminarUsuario(id: ID!): Usuario
     crearCliente(nombre: String!, telefono: String, email: String): Cliente
+    actualizarCliente(id: ID!, data: ClienteInput!): Cliente
+    eliminarCliente(id: ID!): Cliente
     crearServicio(
       codigo: String
       nombre: String!
@@ -64,6 +81,8 @@ export const typeDefs = gql`
       duracion: Int
       categoria: String
     ): Servicio
+    actualizarServicio(id: ID!, data: ServicioInput!): Servicio
+    eliminarServicio(id: ID!): Servicio
     crearCita(
       codigo: String
       clienteId: ID!
@@ -73,7 +92,40 @@ export const typeDefs = gql`
       estado: String
       tipoPago: String
     ): Cita
+    actualizarCita(id: ID!, data: CitaInput!): Cita
+    eliminarCita(id: ID!): Cita
     # Agrega más mutaciones según necesites
+  }
+
+  input UsuarioInput {
+    nombre: String
+    whatsapp: String
+    email: String
+  }
+
+  input ClienteInput {
+    nombre: String
+    telefono: String
+    email: String
+  }
+
+  input ServicioInput {
+    codigo: String
+    nombre: String
+    descripcion: String
+    precio: Float
+    duracion: Int
+    categoria: String
+  }
+
+  input CitaInput {
+    codigo: String
+    clienteId: ID
+    servicioId: ID
+    fechaInicio: Date
+    fechaFin: Date
+    estado: String
+    tipoPago: String
   }
 
   type AuthPayload {
